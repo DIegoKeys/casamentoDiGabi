@@ -39,6 +39,12 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === "GET" && url.pathname === "/admin/config") {
+      requireAdminKey(req);
+      sendJson(res, 200, getAdminConfig(req));
+      return;
+    }
+
     if (req.method === "GET" && url.pathname === "/auth/login") {
       await handleLogin(req, res);
       return;
@@ -84,6 +90,18 @@ function getStatus(connected) {
     adminLoginUrl: adminKey ? null : "/auth/login",
     needsAdminActivation: !connected,
     maxFileMb
+  };
+}
+
+function getAdminConfig(req) {
+  return {
+    configured: requiredEnv.every((name) => Boolean(process.env[name])),
+    redirectUri: process.env.MICROSOFT_REDIRECT_URI || null,
+    expectedRenderRedirectUri: `https://${req.headers.host}/auth/callback`,
+    hasClientId: Boolean(process.env.MICROSOFT_CLIENT_ID),
+    hasClientSecret: Boolean(process.env.MICROSOFT_CLIENT_SECRET),
+    hasOneDriveShareUrl: Boolean(oneDriveShareUrl),
+    hasAdminKey: Boolean(adminKey)
   };
 }
 
