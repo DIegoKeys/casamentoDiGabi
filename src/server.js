@@ -17,7 +17,7 @@ const oneDriveShareUrl = process.env.ONEDRIVE_SHARE_URL || "";
 const adminKey = process.env.ADMIN_KEY || "";
 const maxFileMb = Number(process.env.MAX_FILE_MB || 500);
 const maxBodyBytes = maxFileMb * 1024 * 1024;
-const chunkSizeBytes = Number(process.env.CHUNK_SIZE_MB || 8) * 1024 * 1024;
+const chunkSizeBytes = normalizeChunkSize(process.env.CHUNK_SIZE_MB || 5);
 const scopes = ["Files.ReadWrite", "offline_access", "User.Read"];
 
 const requiredEnv = [
@@ -698,6 +698,14 @@ function encodeSharingUrl(sharingUrl) {
     .replace(/\+/g, "-");
 
   return `u!${encoded}`;
+}
+
+function normalizeChunkSize(sizeMb) {
+  const minimumFragment = 320 * 1024;
+  const requestedBytes = Math.max(1, Number(sizeMb || 5)) * 1024 * 1024;
+  const fragmentCount = Math.max(1, Math.floor(requestedBytes / minimumFragment));
+
+  return fragmentCount * minimumFragment;
 }
 
 function loadEnv() {
