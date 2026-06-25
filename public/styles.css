@@ -1,14 +1,18 @@
 :root {
   color-scheme: light;
-  --ink: #172026;
-  --muted: #5b6871;
-  --line: #d7dde2;
-  --paper: #ffffff;
-  --soft: #edf2f7;
-  --accent: #0f6cbd;
-  --accent-strong: #0b4f8a;
-  --success: #0a7a45;
-  --danger: #b42318;
+  --ink: #233027;
+  --muted: #667267;
+  --paper: rgba(255, 255, 250, 0.9);
+  --line: rgba(75, 91, 77, 0.2);
+  --sage: #7f9a83;
+  --sage-dark: #405d48;
+  --success: #2f6d45;
+  --danger: #a64232;
+  --quest-ink: #3d2816;
+  --quest-muted: #76563d;
+  --quest-paper: rgba(248, 226, 184, 0.92);
+  --quest-line: rgba(88, 49, 20, 0.24);
+  --quest-accent: #8a5428;
 }
 
 * {
@@ -18,65 +22,118 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Georgia, "Times New Roman", serif;
   color: var(--ink);
-  background:
-    linear-gradient(135deg, rgba(15, 108, 189, 0.12), rgba(10, 122, 69, 0.09)),
-    #f6f8fb;
+  background: #f7f8f1;
 }
 
+a {
+  color: inherit;
+}
+
+.choice-page,
+.wedding-page {
+  background:
+    linear-gradient(rgba(252, 253, 247, 0.18), rgba(252, 253, 247, 0.7)),
+    url("/assets/wedding-reference.png") center / cover fixed,
+    #f7f8f1;
+}
+
+.quest-page {
+  color: var(--quest-ink);
+  background:
+    linear-gradient(rgba(68, 39, 18, 0.18), rgba(246, 222, 181, 0.55)),
+    url("/assets/quest-parchment-reference.png") center / cover fixed,
+    #c6955f;
+}
+
+.choice-shell,
 .shell {
-  width: min(920px, calc(100% - 32px));
+  width: min(980px, calc(100% - 28px));
   margin: 0 auto;
   min-height: 100vh;
   display: grid;
   align-items: center;
-  padding: 32px 0;
+  padding: 28px 0;
 }
 
+.choice-hero,
 .panel {
-  background: var(--paper);
-  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
   border-radius: 8px;
-  box-shadow: 0 24px 60px rgba(23, 32, 38, 0.12);
-  padding: clamp(22px, 4vw, 40px);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 24px 70px rgba(37, 55, 43, 0.16);
+  padding: clamp(24px, 5vw, 54px);
+}
+
+.choice-hero::before,
+.wedding-panel::before {
+  content: "";
+  position: absolute;
+  inset: auto -40px -70px auto;
+  width: min(360px, 42vw);
+  aspect-ratio: 1.6;
+  background: url("/assets/wedding-reference.png") right bottom / cover;
+  opacity: 0.24;
+  pointer-events: none;
+}
+
+.quest-panel {
+  border-color: var(--quest-line);
+  background:
+    linear-gradient(rgba(255, 243, 214, 0.82), rgba(235, 197, 134, 0.78)),
+    var(--quest-paper);
+  box-shadow: 0 24px 70px rgba(58, 35, 18, 0.24);
+}
+
+.quest-panel::before {
+  content: "";
+  position: absolute;
+  inset: auto -42px -32px auto;
+  width: min(310px, 48vw);
+  aspect-ratio: 1.7;
+  background: url("/assets/quest-scroll-reference.png") center / contain no-repeat;
+  opacity: 0.42;
+  transform: rotate(-7deg);
+  pointer-events: none;
 }
 
 .topbar {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 28px;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-.eyebrow {
-  margin: 0 0 8px;
-  color: var(--accent);
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 4.4rem);
-  line-height: 1;
-  letter-spacing: 0;
-}
-
+.back-link,
 .connect {
-  flex: 0 0 auto;
   min-height: 42px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
   border-radius: 6px;
-  background: var(--accent);
-  color: #fff;
+  padding: 0 15px;
   text-decoration: none;
+  font-family: Arial, Helvetica, sans-serif;
   font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.back-link {
+  border: 1px solid currentColor;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.connect {
+  background: var(--sage-dark);
+  color: #fff;
+}
+
+.quest-page .connect {
+  background: var(--quest-accent);
 }
 
 .connect.connected {
@@ -87,22 +144,108 @@ h1 {
   display: none;
 }
 
+.eyebrow {
+  margin: 0 0 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--sage-dark);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.quest-page .eyebrow {
+  color: var(--quest-accent);
+}
+
+h1 {
+  position: relative;
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(2.25rem, 8vw, 5.8rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.choice-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: clamp(28px, 5vw, 50px);
+}
+
+.choice-card {
+  min-height: 210px;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  color: #fff;
+  text-decoration: none;
+  background: #4f6c56;
+  box-shadow: 0 18px 34px rgba(37, 55, 43, 0.16);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.choice-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 45px rgba(37, 55, 43, 0.2);
+}
+
+.choice-card span {
+  max-width: 260px;
+  font-size: clamp(1.5rem, 4vw, 2.35rem);
+  line-height: 1;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.36);
+}
+
+.wedding-choice {
+  background:
+    linear-gradient(rgba(52, 80, 60, 0.1), rgba(33, 56, 40, 0.72)),
+    url("/assets/wedding-reference.png") center / cover;
+}
+
+.quest-choice {
+  background:
+    linear-gradient(rgba(72, 39, 18, 0.04), rgba(62, 34, 16, 0.72)),
+    url("/assets/quest-parchment-reference.png") center / cover;
+}
+
+.upload-heading {
+  margin-bottom: 28px;
+}
+
 .dropzone {
   position: relative;
-  min-height: 260px;
+  z-index: 1;
+  min-height: clamp(220px, 34vh, 330px);
   display: grid;
   place-items: center;
-  border: 2px dashed #9aa9b5;
+  border: 2px dashed rgba(64, 93, 72, 0.52);
   border-radius: 8px;
-  background: var(--soft);
+  background: rgba(255, 255, 255, 0.58);
   cursor: pointer;
   transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
+.quest-page .dropzone {
+  border-color: rgba(95, 54, 24, 0.5);
+  background:
+    linear-gradient(rgba(255, 239, 205, 0.72), rgba(239, 206, 149, 0.7)),
+    rgba(255, 238, 205, 0.78);
+}
+
 .dropzone.dragging {
-  border-color: var(--accent);
-  background: #e8f3ff;
+  border-color: var(--sage-dark);
+  background: rgba(244, 250, 238, 0.9);
   transform: translateY(-2px);
+}
+
+.quest-page .dropzone.dragging {
+  border-color: var(--quest-accent);
+  background: rgba(255, 231, 181, 0.94);
 }
 
 .dropzone input {
@@ -120,18 +263,31 @@ h1 {
 }
 
 .dropzone-copy strong {
-  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-size: clamp(1.45rem, 4vw, 2.6rem);
+  line-height: 1;
 }
 
 .dropzone-copy span,
 .status-line {
+  font-family: Arial, Helvetica, sans-serif;
   color: var(--muted);
 }
 
+.quest-page .dropzone-copy span,
+.quest-page .status-line {
+  color: var(--quest-muted);
+}
+
 .status-line {
+  position: relative;
+  z-index: 1;
   min-height: 24px;
   margin: 18px 0;
   font-size: 0.95rem;
+}
+
+.choice-status {
+  margin-top: 18px;
 }
 
 .status-line.error {
@@ -143,6 +299,8 @@ h1 {
 }
 
 .queue {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 10px;
 }
@@ -155,7 +313,13 @@ h1 {
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.72);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.quest-page .file-row {
+  border-color: var(--quest-line);
+  background: rgba(255, 238, 203, 0.72);
 }
 
 .file-name {
@@ -183,17 +347,23 @@ h1 {
   color: var(--danger);
 }
 
-@media (max-width: 640px) {
-  .topbar,
-  .file-row {
+@media (max-width: 720px) {
+  .choice-grid {
     grid-template-columns: 1fr;
   }
 
-  .topbar {
-    display: grid;
+  .choice-card {
+    min-height: 172px;
   }
 
-  .connect {
+  .topbar,
+  .file-row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .connect,
+  .back-link {
     width: 100%;
   }
 }

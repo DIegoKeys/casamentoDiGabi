@@ -3,27 +3,32 @@ const input = document.querySelector("#fileInput");
 const queue = document.querySelector("#queue");
 const statusLine = document.querySelector("#statusLine");
 const connectLink = document.querySelector("#connectLink");
+const uploadType = document.body.dataset.uploadType || "wedding";
 
 let isConnected = false;
-let chunkSize = 8 * 1024 * 1024;
+let chunkSize = 5 * 1024 * 1024;
 
 refreshStatus();
 
-form.addEventListener("dragenter", () => form.classList.add("dragging"));
-form.addEventListener("dragover", (event) => {
-  event.preventDefault();
-  form.classList.add("dragging");
-});
-form.addEventListener("dragleave", () => form.classList.remove("dragging"));
-form.addEventListener("drop", () => form.classList.remove("dragging"));
+if (form && input) {
+  form.addEventListener("dragenter", () => form.classList.add("dragging"));
+  form.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    form.classList.add("dragging");
+  });
+  form.addEventListener("dragleave", () => form.classList.remove("dragging"));
+  form.addEventListener("drop", () => form.classList.remove("dragging"));
 
-input.addEventListener("change", () => {
-  if (input.files.length > 0) {
-    uploadFiles(input.files);
-  }
-});
+  input.addEventListener("change", () => {
+    if (input.files.length > 0) {
+      uploadFiles(input.files);
+    }
+  });
+}
 
 async function refreshStatus() {
+  if (!statusLine) return;
+
   try {
     const response = await fetch("/api/status");
     const status = await response.json();
@@ -32,23 +37,34 @@ async function refreshStatus() {
 
     if (!status.configured) {
       setStatus(`Configure o .env: ${status.missingEnv.join(", ")}`, "error");
-      connectLink.textContent = "Configurar";
-      connectLink.hidden = false;
+      if (connectLink) {
+        connectLink.textContent = "Configurar";
+        connectLink.hidden = false;
+      }
       return;
     }
 
     if (status.connected) {
-      setStatus(`Pronto para envio. Os arquivos vao para "${status.folder}". Limite: ${status.maxFileMb} MB.`, "ok");
-      connectLink.textContent = "Admin";
-      connectLink.classList.add("connected");
-      connectLink.hidden = true;
+      const folder = uploadType === "quest" ? status.questFolder : status.folder;
+      const readyMessage = form
+        ? `Pronto para envio. Destino: ${folder}. Limite: ${status.maxFileMb} MB.`
+        : "Envio pronto.";
+
+      setStatus(readyMessage, "ok");
+      if (connectLink) {
+        connectLink.textContent = "Admin";
+        connectLink.classList.add("connected");
+        connectLink.hidden = true;
+      }
       return;
     }
 
-    connectLink.hidden = !status.adminLoginUrl;
-    if (status.adminLoginUrl) {
-      connectLink.href = status.adminLoginUrl;
-      connectLink.textContent = "Ativar";
+    if (connectLink) {
+      connectLink.hidden = !status.adminLoginUrl;
+      if (status.adminLoginUrl) {
+        connectLink.href = status.adminLoginUrl;
+        connectLink.textContent = "Ativar";
+      }
     }
     setStatus("Envio ainda nao ativado. O responsavel precisa conectar a conta Microsoft uma unica vez.", "");
   } catch {
@@ -88,6 +104,7 @@ async function uploadFileInChunks(file, row) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
+      type: uploadType,
       name: file.name,
       size: file.size,
       mimeType: file.type

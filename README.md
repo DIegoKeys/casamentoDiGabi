@@ -1,6 +1,6 @@
 # Upload para OneDrive pessoal
 
-Site em Node.js para receber imagens e videos pelo navegador e enviar para uma pasta do seu OneDrive pessoal. O visitante nao precisa ter conta Microsoft: a conta do OneDrive e conectada uma unica vez no servidor.
+Site em Node.js para receber imagens e videos pelo navegador e enviar para pastas do seu OneDrive pessoal. O visitante escolhe entre fotos do casamento e fotos de Quest, sem precisar ter conta Microsoft: a conta do OneDrive e conectada uma unica vez no servidor.
 
 ## Como configurar
 
@@ -23,7 +23,7 @@ Site em Node.js para receber imagens e videos pelo navegador e enviar para uma p
 
 4. Abra `http://localhost:3000`, clique em **Ativar** e entre com a conta Microsoft dona do OneDrive.
 
-Depois disso, os arquivos enviados pelo site vao para a pasta configurada em `ONEDRIVE_SHARE_URL` ou `ONEDRIVE_FOLDER`.
+Depois disso, os arquivos enviados pelo site vao para a pasta configurada em `ONEDRIVE_SHARE_URL`/`ONEDRIVE_FOLDER` ou `ONEDRIVE_QUEST_SHARE_URL`/`ONEDRIVE_QUEST_FOLDER`.
 
 ## Observacoes
 

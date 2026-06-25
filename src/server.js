@@ -14,6 +14,8 @@ const uploadSessionDir = path.join(uploadDir, "sessions");
 const tokenPath = path.join(process.cwd(), ".token-cache.json");
 const oneDriveFolder = process.env.ONEDRIVE_FOLDER || "Uploads do Site";
 const oneDriveShareUrl = process.env.ONEDRIVE_SHARE_URL || "";
+const oneDriveQuestFolder = process.env.ONEDRIVE_QUEST_FOLDER || "Fotos de Quest";
+const oneDriveQuestShareUrl = process.env.ONEDRIVE_QUEST_SHARE_URL || "";
 const adminKey = process.env.ADMIN_KEY || "";
 const maxFileMb = Number(process.env.MAX_FILE_MB || 500);
 const maxBodyBytes = maxFileMb * 1024 * 1024;
@@ -44,6 +46,16 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET" && url.pathname === "/admin/config") {
       requireAdminKey(req);
       sendJson(res, 200, getAdminConfig(req));
+      return;
+    }
+
+    if (req.method === "GET" && url.pathname === "/casamento") {
+      await serveStatic(res, "/casamento.html");
+      return;
+    }
+
+    if (req.method === "GET" && url.pathname === "/quest") {
+      await serveStatic(res, "/quest.html");
       return;
     }
 
@@ -98,7 +110,8 @@ function getStatus(connected) {
     configured: missingEnv.length === 0,
     missingEnv,
     connected,
-    folder: oneDriveShareUrl ? "Pasta compartilhada do OneDrive" : oneDriveFolder,
+    folder: oneDriveShareUrl ? "Pasta do casamento" : oneDriveFolder,
+    questFolder: oneDriveQuestShareUrl ? "Pasta de quest" : oneDriveQuestFolder,
     adminLoginUrl: adminKey ? null : "/auth/login",
     needsAdminActivation: !connected,
     maxFileMb,
@@ -114,6 +127,7 @@ function getAdminConfig(req) {
     hasClientId: Boolean(process.env.MICROSOFT_CLIENT_ID),
     hasClientSecret: Boolean(process.env.MICROSOFT_CLIENT_SECRET),
     hasOneDriveShareUrl: Boolean(oneDriveShareUrl),
+    hasOneDriveQuestShareUrl: Boolean(oneDriveQuestShareUrl),
     hasAdminKey: Boolean(adminKey),
     chunkSizeMb: chunkSizeBytes / 1024 / 1024
   };
@@ -178,7 +192,7 @@ async function handleUpload(req, res) {
   }
 
   const accessToken = await getAccessToken();
-  const uploadTarget = await resolveUploadTarget(accessToken);
+  const uploadTarget = await resolveUploadTarget(accessToken, "wedding");
   await fsp.mkdir(uploadDir, { recursive: true });
 
   const results = [];
@@ -217,6 +231,7 @@ async function handleChunkedUploadStart(req, res) {
   const name = String(body.name || "");
   const size = Number(body.size || 0);
   const mimeType = String(body.mimeType || "");
+  const uploadType = normalizeUploadType(body.type);
 
   if (!name || !size || size < 1) {
     throw httpError(400, "Arquivo invalido.");
@@ -231,7 +246,7 @@ async function handleChunkedUploadStart(req, res) {
   }
 
   const accessToken = await getAccessToken();
-  const uploadTarget = await resolveUploadTarget(accessToken);
+  const uploadTarget = await resolveUploadTarget(accessToken, uploadType);
   const destinationName = buildSafeOneDriveName(name);
   const session = await createOneDriveUploadSession(accessToken, uploadTarget, destinationName);
   const uploadId = crypto.randomUUID();
@@ -241,6 +256,7 @@ async function handleChunkedUploadStart(req, res) {
     uploadUrl: session.uploadUrl,
     fileName: name,
     destinationName,
+    uploadType,
     mimeType,
     size,
     nextStart: 0,
@@ -363,15 +379,17 @@ async function exchangeToken(extraParams) {
   return data;
 }
 
-async function resolveUploadTarget(accessToken) {
-  if (!oneDriveShareUrl) {
+async function resolveUploadTarget(accessToken, uploadType) {
+  const destination = getUploadDestination(uploadType);
+
+  if (!destination.shareUrl) {
     return {
       type: "path",
-      folderPath: oneDriveFolder
+      folderPath: destination.folder
     };
   }
 
-  const shareId = encodeSharingUrl(oneDriveShareUrl);
+  const shareId = encodeSharingUrl(destination.shareUrl);
   const response = await graphFetch(
     accessToken,
     `https://graph.microsoft.com/v1.0/shares/${shareId}/driveItem`
@@ -389,6 +407,24 @@ async function resolveUploadTarget(accessToken) {
     driveId,
     itemId
   };
+}
+
+function getUploadDestination(uploadType) {
+  if (uploadType === "quest") {
+    return {
+      folder: oneDriveQuestFolder,
+      shareUrl: oneDriveQuestShareUrl
+    };
+  }
+
+  return {
+    folder: oneDriveFolder,
+    shareUrl: oneDriveShareUrl
+  };
+}
+
+function normalizeUploadType(uploadType) {
+  return uploadType === "quest" ? "quest" : "wedding";
 }
 
 async function uploadFileToOneDrive(accessToken, localPath, uploadTarget, destinationName, fileSize) {

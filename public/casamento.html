@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fotos do casamento</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="upload-page wedding-page" data-upload-type="wedding">
+    <main class="shell">
+      <section class="panel wedding-panel">
+        <div class="topbar">
+          <a class="back-link" href="/">Voltar</a>
+          <a class="connect admin-only" href="/auth/login" id="connectLink">Ativar</a>
+        </div>
+
+        <div class="upload-heading">
+          <p class="eyebrow">Gabi & Diego</p>
+          <h1>Fotos do casamento</h1>
+        </div>
+
+        <form class="dropzone" id="uploadForm">
+          <input id="fileInput" name="files" type="file" accept="image/*,video/*" multiple />
+          <div class="dropzone-copy">
+            <strong>Enviar fotos e videos</strong>
+            <span>Toque aqui ou arraste os arquivos</span>
+          </div>
+        </form>
+
+        <div class="status-line" id="statusLine">Verificando envio...</div>
+        <div class="queue" id="queue" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

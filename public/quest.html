@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fotos de Quest</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="upload-page quest-page" data-upload-type="quest">
+    <main class="shell">
+      <section class="panel quest-panel">
+        <div class="topbar">
+          <a class="back-link" href="/">Voltar</a>
+          <a class="connect admin-only" href="/auth/login" id="connectLink">Ativar</a>
+        </div>
+
+        <div class="upload-heading">
+          <p class="eyebrow">Arquivo dos aventureiros</p>
+          <h1>Fotos de Quest</h1>
+        </div>
+
+        <form class="dropzone" id="uploadForm">
+          <input id="fileInput" name="files" type="file" accept="image/*,video/*" multiple />
+          <div class="dropzone-copy">
+            <strong>Registrar memoria</strong>
+            <span>Toque aqui ou arraste fotos e videos</span>
+          </div>
+        </form>
+
+        <div class="status-line" id="statusLine">Verificando envio...</div>
+        <div class="queue" id="queue" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

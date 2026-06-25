@@ -3,31 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Upload para OneDrive</title>
+    <title>Gabi & Diego</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body>
-    <main class="shell">
-      <section class="panel">
-        <div class="topbar">
-          <div>
-            <p class="eyebrow">OneDrive pessoal</p>
-            <h1>Envie imagens e videos</h1>
-          </div>
-          <a class="connect admin-only" href="/auth/login" id="connectLink">Ativar</a>
+  <body class="choice-page">
+    <main class="choice-shell">
+      <section class="choice-hero">
+        <p class="eyebrow">Gabi & Diego</p>
+        <h1>Qual lembranca voce quer enviar?</h1>
+        <div class="choice-grid" aria-label="Escolha o tipo de foto">
+          <a class="choice-card wedding-choice" href="/casamento">
+            <span>Fotos do casamento</span>
+          </a>
+          <a class="choice-card quest-choice" href="/quest">
+            <span>Fotos de Quest</span>
+          </a>
         </div>
-
-        <form class="dropzone" id="uploadForm">
-          <input id="fileInput" name="files" type="file" accept="image/*,video/*" multiple />
-          <div class="dropzone-copy">
-            <strong>Arraste arquivos aqui</strong>
-            <span>ou clique para escolher imagens e videos</span>
-          </div>
-        </form>
-
-        <div class="status-line" id="statusLine">Verificando conexao...</div>
-
-        <div class="queue" id="queue" aria-live="polite"></div>
+        <div class="status-line choice-status" id="statusLine">Verificando envio...</div>
       </section>
     </main>
 
