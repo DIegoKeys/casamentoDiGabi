@@ -34,16 +34,28 @@ a {
 .choice-page,
 .wedding-page {
   background:
-    linear-gradient(rgba(252, 253, 247, 0.18), rgba(252, 253, 247, 0.7)),
-    url("/assets/wedding-reference.png") center / cover fixed,
+    radial-gradient(circle at 15% 18%, rgba(236, 241, 222, 0.95) 0 9rem, transparent 9.2rem),
+    radial-gradient(circle at 76% 10%, rgba(222, 234, 214, 0.72) 0 7rem, transparent 7.2rem),
+    radial-gradient(circle at 22% 86%, rgba(213, 229, 210, 0.64) 0 10rem, transparent 10.2rem),
+    linear-gradient(rgba(252, 253, 247, 0.72), rgba(252, 253, 247, 0.86)),
     #f7f8f1;
+}
+
+.choice-page {
+  background:
+    linear-gradient(90deg, rgba(16, 20, 14, 0.72), rgba(20, 29, 20, 0.34), rgba(15, 20, 14, 0.1)),
+    linear-gradient(0deg, rgba(10, 14, 10, 0.45), rgba(10, 14, 10, 0.04) 42%, rgba(10, 14, 10, 0.35)),
+    url("/assets/gabidiego-hero.jpg") center / cover fixed,
+    #172016;
 }
 
 .quest-page {
   color: var(--quest-ink);
   background:
-    linear-gradient(rgba(68, 39, 18, 0.18), rgba(246, 222, 181, 0.55)),
-    url("/assets/quest-parchment-reference.png") center / cover fixed,
+    radial-gradient(circle at 22% 12%, rgba(116, 69, 31, 0.18) 0 5rem, transparent 5.2rem),
+    radial-gradient(circle at 84% 84%, rgba(77, 42, 17, 0.2) 0 8rem, transparent 8.2rem),
+    repeating-linear-gradient(92deg, rgba(95, 54, 24, 0.05) 0 1px, transparent 1px 18px),
+    linear-gradient(135deg, #d5a76b, #f1d6a5 38%, #b8783e),
     #c6955f;
 }
 
@@ -72,18 +84,37 @@ a {
 .wedding-panel::before {
   content: "";
   position: absolute;
-  inset: auto -40px -70px auto;
-  width: min(360px, 42vw);
-  aspect-ratio: 1.6;
-  background: url("/assets/wedding-reference.png") right bottom / cover;
-  opacity: 0.24;
+  inset: auto -56px -52px auto;
+  width: min(360px, 46vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 40% 36%, rgba(255, 255, 255, 0.7) 0 1.5rem, transparent 1.6rem),
+    radial-gradient(circle at 56% 45%, rgba(245, 249, 236, 0.86) 0 2.2rem, transparent 2.3rem),
+    radial-gradient(circle at 48% 58%, rgba(120, 150, 124, 0.5) 0 0.75rem, transparent 0.85rem),
+    radial-gradient(circle at 50% 50%, rgba(139, 161, 133, 0.24) 0 62%, transparent 63%);
+  opacity: 0.6;
   pointer-events: none;
+}
+
+.choice-hero::before {
+  display: none;
+}
+
+.choice-hero {
+  color: #fff;
+  background: rgba(17, 23, 17, 0.2);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
 }
 
 .quest-panel {
   border-color: var(--quest-line);
   background:
-    linear-gradient(rgba(255, 243, 214, 0.82), rgba(235, 197, 134, 0.78)),
+    radial-gradient(circle at 7% 10%, rgba(86, 45, 18, 0.14) 0 3.5rem, transparent 3.7rem),
+    radial-gradient(circle at 96% 18%, rgba(86, 45, 18, 0.12) 0 4.4rem, transparent 4.6rem),
+    repeating-linear-gradient(0deg, rgba(99, 58, 25, 0.035) 0 2px, transparent 2px 12px),
+    linear-gradient(rgba(255, 243, 214, 0.9), rgba(235, 197, 134, 0.86)),
     var(--quest-paper);
   box-shadow: 0 24px 70px rgba(58, 35, 18, 0.24);
 }
@@ -94,7 +125,12 @@ a {
   inset: auto -42px -32px auto;
   width: min(310px, 48vw);
   aspect-ratio: 1.7;
-  background: url("/assets/quest-scroll-reference.png") center / contain no-repeat;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(83, 44, 18, 0.72) 0 8%, transparent 8% 92%, rgba(83, 44, 18, 0.72) 92%),
+    repeating-linear-gradient(-18deg, rgba(83, 44, 18, 0.18) 0 1px, transparent 1px 28px),
+    linear-gradient(135deg, #f2d6a3, #c58a4c);
+  box-shadow: inset 0 0 26px rgba(78, 38, 14, 0.28);
   opacity: 0.42;
   transform: rotate(-7deg);
   pointer-events: none;
@@ -153,6 +189,10 @@ a {
   text-transform: uppercase;
 }
 
+.choice-page .eyebrow {
+  color: rgba(255, 255, 255, 0.82);
+}
+
 .quest-page .eyebrow {
   color: var(--quest-accent);
 }
@@ -182,9 +222,9 @@ h1 {
   padding: 20px;
   border-radius: 8px;
   border: 1px solid var(--line);
-  color: #fff;
+  color: var(--ink);
   text-decoration: none;
-  background: #4f6c56;
+  background: rgba(255, 255, 250, 0.88);
   box-shadow: 0 18px 34px rgba(37, 55, 43, 0.16);
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
@@ -198,19 +238,22 @@ h1 {
   max-width: 260px;
   font-size: clamp(1.5rem, 4vw, 2.35rem);
   line-height: 1;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.36);
+  text-shadow: none;
 }
 
 .wedding-choice {
   background:
-    linear-gradient(rgba(52, 80, 60, 0.1), rgba(33, 56, 40, 0.72)),
-    url("/assets/wedding-reference.png") center / cover;
+    radial-gradient(circle at 82% 22%, rgba(183, 204, 177, 0.78) 0 4rem, transparent 4.2rem),
+    radial-gradient(circle at 18% 80%, rgba(232, 239, 220, 0.94) 0 5.5rem, transparent 5.7rem),
+    linear-gradient(135deg, rgba(255, 255, 250, 0.94), rgba(221, 234, 214, 0.92));
 }
 
 .quest-choice {
+  color: var(--quest-ink);
   background:
-    linear-gradient(rgba(72, 39, 18, 0.04), rgba(62, 34, 16, 0.72)),
-    url("/assets/quest-parchment-reference.png") center / cover;
+    repeating-linear-gradient(95deg, rgba(104, 61, 27, 0.08) 0 1px, transparent 1px 18px),
+    radial-gradient(circle at 78% 26%, rgba(90, 49, 21, 0.14) 0 4rem, transparent 4.2rem),
+    linear-gradient(135deg, rgba(255, 235, 191, 0.95), rgba(202, 139, 74, 0.9));
 }
 
 .upload-heading {
