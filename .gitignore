@@ -1,0 +1,7 @@
+node_modules/
+.env
+uploads/
+.token-cache.json
+npm-debug.log*
+server.log
+server.err.log

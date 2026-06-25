@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upload para OneDrive</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">OneDrive pessoal</p>
+            <h1>Envie imagens e videos</h1>
+          </div>
+          <a class="connect admin-only" href="/auth/login" id="connectLink">Ativar</a>
+        </div>
+
+        <form class="dropzone" id="uploadForm">
+          <input id="fileInput" name="files" type="file" accept="image/*,video/*" multiple />
+          <div class="dropzone-copy">
+            <strong>Arraste arquivos aqui</strong>
+            <span>ou clique para escolher imagens e videos</span>
+          </div>
+        </form>
+
+        <div class="status-line" id="statusLine">Verificando conexao...</div>
+
+        <div class="queue" id="queue" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
