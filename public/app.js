@@ -5,6 +5,7 @@ const statusLine = document.querySelector("#statusLine");
 const connectLink = document.querySelector("#connectLink");
 
 let isConnected = false;
+let chunkSize = 8 * 1024 * 1024;
 
 refreshStatus();
 
@@ -27,6 +28,7 @@ async function refreshStatus() {
     const response = await fetch("/api/status");
     const status = await response.json();
     isConnected = status.connected;
+    chunkSize = Number(status.chunkSize || chunkSize);
 
     if (!status.configured) {
       setStatus(`Configure o .env: ${status.missingEnv.join(", ")}`, "error");
@@ -62,35 +64,70 @@ async function uploadFiles(files) {
 
   const selected = Array.from(files);
   const rows = selected.map(addFileRow);
-  const formData = new FormData();
-
-  for (const file of selected) {
-    formData.append("files", file);
-  }
 
   setStatus("Enviando arquivos...", "");
 
   try {
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: formData
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Falha no envio.");
+    for (let index = 0; index < selected.length; index += 1) {
+      await uploadFileInChunks(selected[index], rows[index]);
     }
-
-    rows.forEach((row, index) => {
-      const result = data.files[index];
-      updateFileRow(row, "Enviado", "success", result?.webUrl);
-    });
 
     setStatus("Upload concluido.", "ok");
     input.value = "";
   } catch (error) {
-    rows.forEach((row) => updateFileRow(row, error.message, "error"));
     setStatus(error.message, "error");
+  }
+}
+
+async function uploadFileInChunks(file, row) {
+  updateFileRow(row, "Preparando", "");
+
+  const startResponse = await fetch("/api/uploads/start", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: file.name,
+      size: file.size,
+      mimeType: file.type
+    })
+  });
+  const startData = await startResponse.json();
+
+  if (!startResponse.ok) {
+    updateFileRow(row, startData.error || "Falha ao iniciar", "error");
+    throw new Error(startData.error || "Falha ao iniciar upload.");
+  }
+
+  let offset = 0;
+  const uploadChunkSize = Number(startData.chunkSize || chunkSize);
+
+  while (offset < file.size) {
+    const chunk = file.slice(offset, offset + uploadChunkSize);
+    const response = await fetch(`/api/uploads/${startData.uploadId}/chunk`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "X-Chunk-Start": String(offset),
+        "X-File-Size": String(file.size)
+      },
+      body: chunk
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      updateFileRow(row, data.error || "Falha no envio", "error");
+      throw new Error(data.error || "Falha no envio.");
+    }
+
+    offset += chunk.size;
+    updateFileRow(row, `${Math.floor((offset / file.size) * 100)}%`, "");
+
+    if (data.done) {
+      updateFileRow(row, "Enviado", "success", data.file?.webUrl);
+      return;
+    }
   }
 }
 

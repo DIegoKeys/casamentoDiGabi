@@ -28,7 +28,7 @@ Depois disso, os arquivos enviados pelo site vao para a pasta configurada em `ON
 ## Observacoes
 
 - O app aceita apenas arquivos com tipo `image/*` ou `video/*`.
-- Arquivos grandes sao enviados ao OneDrive em partes.
+- Arquivos grandes sao enviados em partes pequenas do navegador para o servidor e do servidor para o OneDrive.
 - O token fica salvo localmente em `.token-cache.json`, que ja esta no `.gitignore`.
 - O servidor usa apenas recursos nativos do Node.js, sem dependencias externas.
 - Os convidados nao fazem login. Somente o responsavel clica em `/auth/login` uma vez para autorizar o servidor.

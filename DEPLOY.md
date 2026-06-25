@@ -25,6 +25,7 @@
    MICROSOFT_REDIRECT_URI=https://seu-site.onrender.com/auth/callback
    ONEDRIVE_SHARE_URL=seu-link-da-pasta
    MAX_FILE_MB=500
+   CHUNK_SIZE_MB=8
    ```
 
 7. No Azure, edite o App Registration e adicione a Redirect URI publica:

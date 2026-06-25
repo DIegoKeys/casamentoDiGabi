@@ -10,12 +10,14 @@ loadEnv();
 const port = Number(process.env.PORT || 3000);
 const publicDir = path.join(process.cwd(), "public");
 const uploadDir = path.join(process.cwd(), "uploads");
+const uploadSessionDir = path.join(uploadDir, "sessions");
 const tokenPath = path.join(process.cwd(), ".token-cache.json");
 const oneDriveFolder = process.env.ONEDRIVE_FOLDER || "Uploads do Site";
 const oneDriveShareUrl = process.env.ONEDRIVE_SHARE_URL || "";
 const adminKey = process.env.ADMIN_KEY || "";
 const maxFileMb = Number(process.env.MAX_FILE_MB || 500);
 const maxBodyBytes = maxFileMb * 1024 * 1024;
+const chunkSizeBytes = Number(process.env.CHUNK_SIZE_MB || 8) * 1024 * 1024;
 const scopes = ["Files.ReadWrite", "offline_access", "User.Read"];
 
 const requiredEnv = [
@@ -60,6 +62,16 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === "POST" && url.pathname === "/api/uploads/start") {
+      await handleChunkedUploadStart(req, res);
+      return;
+    }
+
+    if (req.method === "PUT" && url.pathname.startsWith("/api/uploads/") && url.pathname.endsWith("/chunk")) {
+      await handleChunkedUploadPart(req, res, url);
+      return;
+    }
+
     if (req.method === "GET") {
       await serveStatic(res, url.pathname);
       return;
@@ -89,7 +101,8 @@ function getStatus(connected) {
     folder: oneDriveShareUrl ? "Pasta compartilhada do OneDrive" : oneDriveFolder,
     adminLoginUrl: adminKey ? null : "/auth/login",
     needsAdminActivation: !connected,
-    maxFileMb
+    maxFileMb,
+    chunkSize: chunkSizeBytes
   };
 }
 
@@ -101,7 +114,8 @@ function getAdminConfig(req) {
     hasClientId: Boolean(process.env.MICROSOFT_CLIENT_ID),
     hasClientSecret: Boolean(process.env.MICROSOFT_CLIENT_SECRET),
     hasOneDriveShareUrl: Boolean(oneDriveShareUrl),
-    hasAdminKey: Boolean(adminKey)
+    hasAdminKey: Boolean(adminKey),
+    chunkSizeMb: chunkSizeBytes / 1024 / 1024
   };
 }
 
@@ -194,6 +208,112 @@ async function handleUpload(req, res) {
   }
 
   sendJson(res, 200, { files: results });
+}
+
+async function handleChunkedUploadStart(req, res) {
+  ensureConfigured();
+
+  const body = await readJsonBody(req, 64 * 1024);
+  const name = String(body.name || "");
+  const size = Number(body.size || 0);
+  const mimeType = String(body.mimeType || "");
+
+  if (!name || !size || size < 1) {
+    throw httpError(400, "Arquivo invalido.");
+  }
+
+  if (size > maxBodyBytes) {
+    throw httpError(413, `Arquivo maior que o limite de ${maxFileMb} MB.`);
+  }
+
+  if (!mimeType.startsWith("image/") && !mimeType.startsWith("video/")) {
+    throw httpError(400, "Envie apenas imagens ou videos.");
+  }
+
+  const accessToken = await getAccessToken();
+  const uploadTarget = await resolveUploadTarget(accessToken);
+  const destinationName = buildSafeOneDriveName(name);
+  const session = await createOneDriveUploadSession(accessToken, uploadTarget, destinationName);
+  const uploadId = crypto.randomUUID();
+
+  await fsp.mkdir(uploadSessionDir, { recursive: true });
+  await saveUploadSession(uploadId, {
+    uploadUrl: session.uploadUrl,
+    fileName: name,
+    destinationName,
+    mimeType,
+    size,
+    nextStart: 0,
+    createdAt: new Date().toISOString()
+  });
+
+  sendJson(res, 200, {
+    uploadId,
+    chunkSize: chunkSizeBytes
+  });
+}
+
+async function handleChunkedUploadPart(req, res, url) {
+  const uploadId = url.pathname.split("/")[3];
+
+  if (!/^[a-f0-9-]{36}$/i.test(uploadId)) {
+    throw httpError(400, "Upload invalido.");
+  }
+
+  const session = await readUploadSession(uploadId);
+  const start = Number(req.headers["x-chunk-start"]);
+  const total = Number(req.headers["x-file-size"]);
+
+  if (!Number.isInteger(start) || !Number.isInteger(total) || total !== session.size) {
+    throw httpError(400, "Metadados do pedaco invalidos.");
+  }
+
+  if (start !== session.nextStart) {
+    throw httpError(409, "Pedaco fora de ordem. Tente enviar o arquivo novamente.");
+  }
+
+  const chunk = await readRequestBody(req, chunkSizeBytes + 1024 * 1024);
+  const end = start + chunk.length - 1;
+
+  if (chunk.length < 1 || end >= session.size) {
+    throw httpError(400, "Pedaco invalido.");
+  }
+
+  const response = await fetch(session.uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Length": String(chunk.length),
+      "Content-Range": `bytes ${start}-${end}/${session.size}`
+    },
+    body: chunk
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw httpError(response.status, `Falha no envio para o OneDrive: ${text}`);
+  }
+
+  session.nextStart = end + 1;
+
+  if (response.status === 201 || response.status === 200) {
+    const item = await response.json();
+    await deleteUploadSession(uploadId);
+    sendJson(res, 200, {
+      done: true,
+      file: {
+        name: session.fileName,
+        size: session.size,
+        webUrl: item.webUrl
+      }
+    });
+    return;
+  }
+
+  await saveUploadSession(uploadId, session);
+  sendJson(res, 200, {
+    done: false,
+    received: session.nextStart
+  });
 }
 
 async function getAccessToken() {
@@ -294,24 +414,7 @@ async function uploadFileToOneDrive(accessToken, localPath, uploadTarget, destin
 }
 
 async function uploadLargeFileToOneDrive(accessToken, localPath, uploadTarget, destinationName, fileSize) {
-  const uploadUrl = buildUploadUrl(uploadTarget, destinationName, "createUploadSession");
-  const sessionResponse = await graphFetch(
-    accessToken,
-    uploadUrl,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        item: {
-          "@microsoft.graph.conflictBehavior": "rename"
-        }
-      })
-    }
-  );
-
-  const session = await sessionResponse.json();
+  const session = await createOneDriveUploadSession(accessToken, uploadTarget, destinationName);
   const chunkSize = 10 * 1024 * 1024;
   const handle = await fsp.open(localPath, "r");
 
@@ -349,6 +452,27 @@ async function uploadLargeFileToOneDrive(accessToken, localPath, uploadTarget, d
   }
 
   throw httpError(500, "O upload terminou sem resposta final do OneDrive.");
+}
+
+async function createOneDriveUploadSession(accessToken, uploadTarget, destinationName) {
+  const uploadUrl = buildUploadUrl(uploadTarget, destinationName, "createUploadSession");
+  const sessionResponse = await graphFetch(
+    accessToken,
+    uploadUrl,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        item: {
+          "@microsoft.graph.conflictBehavior": "rename"
+        }
+      })
+    }
+  );
+
+  return sessionResponse.json();
 }
 
 async function graphFetch(accessToken, url, options = {}) {
@@ -426,6 +550,16 @@ async function readRequestBody(req, maxBytes) {
   return Buffer.concat(chunks);
 }
 
+async function readJsonBody(req, maxBytes) {
+  const body = await readRequestBody(req, maxBytes);
+
+  try {
+    return JSON.parse(body.toString("utf8"));
+  } catch {
+    throw httpError(400, "JSON invalido.");
+  }
+}
+
 async function serveStatic(res, requestedPath) {
   const cleanPath = requestedPath === "/" ? "/index.html" : requestedPath;
   const filePath = path.normalize(path.join(publicDir, cleanPath));
@@ -501,6 +635,27 @@ async function readToken() {
 
 async function saveToken(token) {
   await fsp.writeFile(tokenPath, JSON.stringify(token, null, 2), "utf8");
+}
+
+async function readUploadSession(uploadId) {
+  try {
+    return JSON.parse(await fsp.readFile(getUploadSessionPath(uploadId), "utf8"));
+  } catch {
+    throw httpError(404, "Sessao de upload nao encontrada. Tente enviar novamente.");
+  }
+}
+
+async function saveUploadSession(uploadId, session) {
+  await fsp.mkdir(uploadSessionDir, { recursive: true });
+  await fsp.writeFile(getUploadSessionPath(uploadId), JSON.stringify(session, null, 2), "utf8");
+}
+
+async function deleteUploadSession(uploadId) {
+  await fsp.rm(getUploadSessionPath(uploadId), { force: true });
+}
+
+function getUploadSessionPath(uploadId) {
+  return path.join(uploadSessionDir, `${uploadId}.json`);
 }
 
 function buildSafeOneDriveName(originalName) {
