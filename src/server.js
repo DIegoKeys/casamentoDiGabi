@@ -112,6 +112,8 @@ function getStatus(connected) {
     connected,
     folder: oneDriveShareUrl ? "Pasta do casamento" : oneDriveFolder,
     questFolder: oneDriveQuestShareUrl ? "Pasta de quest" : oneDriveQuestFolder,
+    folderUrl: oneDriveShareUrl || null,
+    questFolderUrl: oneDriveQuestShareUrl || null,
     adminLoginUrl: adminKey ? null : "/auth/login",
     needsAdminActivation: !connected,
     maxFileMb,

@@ -311,7 +311,8 @@ h1 {
 }
 
 .dropzone-copy span,
-.status-line {
+.status-line,
+.folder-link {
   font-family: Arial, Helvetica, sans-serif;
   color: var(--muted);
 }
@@ -327,6 +328,34 @@ h1 {
   min-height: 24px;
   margin: 18px 0;
   font-size: 0.95rem;
+}
+
+.folder-link {
+  position: relative;
+  z-index: 1;
+  min-height: 42px;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 18px;
+  padding: 0 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(64, 93, 72, 0.34);
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--sage-dark);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.folder-link[hidden] {
+  display: none;
+}
+
+.quest-page .folder-link {
+  border-color: rgba(95, 54, 24, 0.34);
+  background: rgba(255, 238, 203, 0.5);
+  color: var(--quest-accent);
 }
 
 .choice-status {

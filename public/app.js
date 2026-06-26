@@ -3,6 +3,7 @@ const input = document.querySelector("#fileInput");
 const queue = document.querySelector("#queue");
 const statusLine = document.querySelector("#statusLine");
 const connectLink = document.querySelector("#connectLink");
+const folderLink = document.querySelector("#folderLink");
 const uploadType = document.body.dataset.uploadType || "wedding";
 
 let isConnected = false;
@@ -46,11 +47,13 @@ async function refreshStatus() {
 
     if (status.connected) {
       const folder = uploadType === "quest" ? status.questFolder : status.folder;
+      const folderUrl = uploadType === "quest" ? status.questFolderUrl : status.folderUrl;
       const readyMessage = form
         ? `Pronto para envio. Destino: ${folder}. Limite: ${status.maxFileMb} MB.`
         : "Envio pronto.";
 
       setStatus(readyMessage, "ok");
+      updateFolderLink(folderUrl);
       if (connectLink) {
         connectLink.textContent = "Admin";
         connectLink.classList.add("connected");
@@ -67,8 +70,19 @@ async function refreshStatus() {
       }
     }
     setStatus("Envio ainda nao ativado. O responsavel precisa conectar a conta Microsoft uma unica vez.", "");
+    updateFolderLink(null);
   } catch {
     setStatus("Nao consegui verificar o servidor.", "error");
+    updateFolderLink(null);
+  }
+}
+
+function updateFolderLink(url) {
+  if (!folderLink) return;
+
+  folderLink.hidden = !url;
+  if (url) {
+    folderLink.href = url;
   }
 }
 
