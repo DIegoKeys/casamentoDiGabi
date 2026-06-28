@@ -59,6 +59,11 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === "GET" && url.pathname === "/companherismo") {
+      await serveStatic(res, "/companherismo.html");
+      return;
+    }
+
     if (req.method === "GET" && url.pathname === "/auth/login") {
       await handleLogin(req, res);
       return;
@@ -628,7 +633,8 @@ function getContentType(filePath) {
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
-    ".svg": "image/svg+xml"
+    ".svg": "image/svg+xml",
+    ".mp3": "audio/mpeg"
   }[extension] || "application/octet-stream";
 }
 

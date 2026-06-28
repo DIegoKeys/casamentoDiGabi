@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Companherismo</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="secret-page">
+    <main class="secret-shell">
+      <section class="secret-panel">
+        <p class="eyebrow">Charada secreta</p>
+        <h1>Parabens por chegar aqui agora essa sera a ultima charada</h1>
+
+        <button class="sound-button" id="soundButton" type="button" hidden>Tocar musica</button>
+
+        <form class="riddle-form" id="riddleForm">
+          <label for="answerInput">A primeira musica que o Diego e Gabi cantaram juntos foi:</label>
+          <input id="answerInput" name="answer" type="text" autocomplete="off" />
+          <button type="submit">Responder</button>
+        </form>
+
+        <div class="secret-message" id="secretMessage" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <audio id="secretAudio" src="/assets/ela-vai-voltar-2s.mp3" loop preload="auto"></audio>
+    <script src="/companherismo.js"></script>
+  </body>
+</html>

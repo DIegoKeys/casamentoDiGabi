@@ -49,6 +49,16 @@ a {
     #172016;
 }
 
+.secret-page {
+  min-height: 100vh;
+  color: #f9f1df;
+  background:
+    radial-gradient(circle at 52% 24%, rgba(255, 227, 165, 0.18), transparent 22rem),
+    linear-gradient(rgba(22, 16, 11, 0.72), rgba(42, 24, 12, 0.82)),
+    url("/assets/gabidiego-hero.jpg") center / cover fixed,
+    #1d160f;
+}
+
 .quest-page {
   color: var(--quest-ink);
   background:
@@ -60,7 +70,8 @@ a {
 }
 
 .choice-shell,
-.shell {
+.shell,
+.secret-shell {
   width: min(980px, calc(100% - 28px));
   margin: 0 auto;
   min-height: 100vh;
@@ -70,7 +81,8 @@ a {
 }
 
 .choice-hero,
-.panel {
+.panel,
+.secret-panel {
   position: relative;
   overflow: hidden;
   border-radius: 8px;
@@ -78,6 +90,17 @@ a {
   background: var(--paper);
   box-shadow: 0 24px 70px rgba(37, 55, 43, 0.16);
   padding: clamp(24px, 5vw, 54px);
+}
+
+.secret-panel {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  border-color: rgba(255, 238, 199, 0.22);
+  background:
+    linear-gradient(rgba(255, 238, 201, 0.14), rgba(65, 35, 16, 0.34)),
+    rgba(22, 14, 8, 0.72);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(5px);
 }
 
 .choice-hero::before,
@@ -191,6 +214,10 @@ a {
 
 .choice-page .eyebrow {
   color: rgba(255, 255, 255, 0.82);
+}
+
+.secret-page .eyebrow {
+  color: rgba(255, 226, 172, 0.86);
 }
 
 .quest-page .eyebrow {
@@ -356,6 +383,66 @@ h1 {
   border-color: rgba(95, 54, 24, 0.34);
   background: rgba(255, 238, 203, 0.5);
   color: var(--quest-accent);
+}
+
+.sound-button,
+.riddle-form button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 18px;
+  color: #271707;
+  background: #f4d79f;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sound-button[hidden] {
+  display: none;
+}
+
+.sound-button {
+  margin: 22px 0 0;
+}
+
+.riddle-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 28px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.riddle-form label {
+  color: rgba(255, 248, 231, 0.86);
+  font-weight: 700;
+}
+
+.riddle-form input {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid rgba(255, 238, 199, 0.36);
+  border-radius: 6px;
+  padding: 0 14px;
+  color: #fff8e7;
+  background: rgba(255, 255, 255, 0.12);
+  font: inherit;
+}
+
+.secret-message {
+  min-height: 28px;
+  margin-top: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.secret-message.ok {
+  color: #ffe1a0;
+}
+
+.secret-message.error {
+  color: #ffb4a8;
 }
 
 .choice-status {
