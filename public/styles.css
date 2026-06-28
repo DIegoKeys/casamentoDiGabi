@@ -526,3 +526,313 @@ h1 {
     width: 100%;
   }
 }
+
+/* Mobile-first visual refresh */
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.choice-page {
+  background:
+    linear-gradient(180deg, rgba(11, 16, 11, 0.28), rgba(11, 16, 11, 0.78)),
+    linear-gradient(90deg, rgba(11, 16, 11, 0.52), rgba(11, 16, 11, 0.08)),
+    url("/assets/gabidiego-hero.jpg") 58% center / cover fixed,
+    #172016;
+}
+
+.choice-shell,
+.shell,
+.secret-shell {
+  width: min(1040px, calc(100% - 18px));
+  align-items: end;
+  padding: 10px 0 18px;
+}
+
+.choice-hero {
+  min-height: calc(100vh - 28px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(180deg, transparent, rgba(12, 18, 12, 0.54));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.choice-hero h1 {
+  max-width: 100%;
+  color: #fff8e9;
+  font-size: clamp(2.55rem, 13.8vw, 6.4rem);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.36);
+}
+
+.memory-strip {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 0.9fr;
+  gap: 8px;
+  min-height: 78px;
+}
+
+.memory-strip img {
+  width: 100%;
+  height: 100%;
+  min-height: 78px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.memory-strip img:first-child {
+  object-position: 54% 52%;
+}
+
+.memory-strip img:nth-child(2) {
+  object-position: center;
+}
+
+.memory-strip img:nth-child(3) {
+  object-position: 42% 70%;
+}
+
+.choice-grid {
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 0;
+}
+
+.choice-card {
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #fff8e9;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.choice-card::after {
+  content: "";
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background:
+    linear-gradient(135deg, transparent 46%, rgba(255, 255, 255, 0.78) 47% 53%, transparent 54%),
+    linear-gradient(45deg, transparent 46%, rgba(255, 255, 255, 0.78) 47% 53%, transparent 54%);
+  transform: rotate(45deg);
+}
+
+.choice-card span {
+  font-size: clamp(1.42rem, 7vw, 2.35rem);
+  color: inherit;
+}
+
+.wedding-choice {
+  background:
+    linear-gradient(90deg, rgba(46, 75, 53, 0.78), rgba(127, 154, 131, 0.48)),
+    rgba(255, 255, 255, 0.14);
+}
+
+.quest-choice {
+  color: #fff1d5;
+  background:
+    linear-gradient(90deg, rgba(76, 36, 16, 0.82), rgba(194, 100, 54, 0.48)),
+    rgba(255, 255, 255, 0.14);
+}
+
+.choice-status {
+  color: rgba(255, 248, 233, 0.78);
+  margin: 0;
+}
+
+.wedding-page {
+  background:
+    linear-gradient(180deg, rgba(247, 248, 241, 0.72), rgba(232, 238, 224, 0.92)),
+    url("/assets/gabidiego-fountain-light.jpg") 58% top / cover fixed,
+    #eef2e7;
+}
+
+.quest-page {
+  background:
+    linear-gradient(180deg, rgba(34, 20, 12, 0.14), rgba(244, 210, 157, 0.94)),
+    url("/assets/gabidiego-brick.jpg") 43% center / cover fixed,
+    #be7442;
+}
+
+.secret-page {
+  background:
+    radial-gradient(circle at 52% 24%, rgba(255, 227, 165, 0.18), transparent 22rem),
+    linear-gradient(rgba(22, 16, 11, 0.68), rgba(28, 14, 7, 0.88)),
+    url("/assets/gabidiego-neon.jpg") center / cover fixed,
+    #1d160f;
+}
+
+.panel,
+.secret-panel {
+  width: 100%;
+  padding: 14px;
+  border-color: rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 248, 0.84);
+  backdrop-filter: blur(12px);
+}
+
+.quest-panel {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255, 231, 184, 0.52), transparent 8rem),
+    rgba(255, 228, 181, 0.86);
+}
+
+.topbar {
+  margin-bottom: 14px;
+}
+
+.back-link,
+.connect,
+.folder-link,
+.sound-button,
+.riddle-form button {
+  min-height: 48px;
+  border-radius: 999px;
+}
+
+.upload-heading {
+  margin-bottom: 14px;
+}
+
+.upload-heading h1,
+.secret-panel h1 {
+  font-size: clamp(2.45rem, 14vw, 5.6rem);
+}
+
+.feature-photo,
+.secret-photo {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  box-shadow: 0 18px 38px rgba(28, 38, 30, 0.2);
+}
+
+.feature-photo img,
+.secret-photo img {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 48vh, 380px);
+  object-fit: cover;
+}
+
+.wedding-feature img {
+  object-position: 58% 48%;
+}
+
+.quest-feature img {
+  object-position: 42% 76%;
+}
+
+.secret-photo img {
+  height: clamp(190px, 34vh, 320px);
+  object-position: 44% 72%;
+}
+
+.feature-photo figcaption {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #fff8e9;
+  background: rgba(16, 22, 17, 0.54);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+}
+
+.quest-feature figcaption {
+  background: rgba(48, 24, 12, 0.62);
+}
+
+.dropzone {
+  min-height: 188px;
+  border-style: solid;
+  border-width: 1px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.58)),
+    radial-gradient(circle at 50% 8%, rgba(127, 154, 131, 0.22), transparent 8rem);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.52);
+}
+
+.quest-page .dropzone {
+  background:
+    linear-gradient(rgba(255, 239, 205, 0.78), rgba(232, 181, 111, 0.52)),
+    radial-gradient(circle at 50% 8%, rgba(138, 84, 40, 0.22), transparent 8rem);
+}
+
+.dropzone-copy strong {
+  font-size: clamp(1.7rem, 9vw, 3rem);
+}
+
+.folder-link {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.file-row {
+  grid-template-columns: 1fr;
+}
+
+.secret-panel {
+  color: #fff8e9;
+  background: rgba(20, 13, 8, 0.76);
+}
+
+@media (min-width: 760px) {
+  .choice-shell,
+  .shell,
+  .secret-shell {
+    align-items: center;
+    padding: 30px 0;
+  }
+
+  .choice-hero {
+    min-height: auto;
+    padding: clamp(32px, 5vw, 58px);
+  }
+
+  .choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .choice-card {
+    min-height: 170px;
+    align-items: flex-end;
+  }
+
+  .panel,
+  .secret-panel {
+    padding: clamp(26px, 4vw, 44px);
+  }
+
+  .feature-photo img {
+    height: 360px;
+  }
+
+  .file-row {
+    grid-template-columns: 1fr auto;
+  }
+}
