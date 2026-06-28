@@ -568,7 +568,7 @@ body {
 .choice-hero h1 {
   max-width: 100%;
   color: #fff8e9;
-  font-size: clamp(2.55rem, 13.8vw, 6.4rem);
+  font-size: clamp(2.25rem, 11.6vw, 5.4rem);
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.36);
 }
 

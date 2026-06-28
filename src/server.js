@@ -14,7 +14,7 @@ const uploadSessionDir = path.join(uploadDir, "sessions");
 const tokenPath = path.join(process.cwd(), ".token-cache.json");
 const oneDriveFolder = process.env.ONEDRIVE_FOLDER || "Uploads do Site";
 const oneDriveShareUrl = process.env.ONEDRIVE_SHARE_URL || "";
-const oneDriveQuestFolder = process.env.ONEDRIVE_QUEST_FOLDER || "Fotos de Quest";
+const oneDriveQuestFolder = process.env.ONEDRIVE_QUEST_FOLDER || "Fotos de Missao";
 const oneDriveQuestShareUrl = process.env.ONEDRIVE_QUEST_SHARE_URL || "";
 const adminKey = process.env.ADMIN_KEY || "";
 const maxFileMb = Number(process.env.MAX_FILE_MB || 500);
@@ -116,7 +116,7 @@ function getStatus(connected) {
     missingEnv,
     connected,
     folder: oneDriveShareUrl ? "Pasta do casamento" : oneDriveFolder,
-    questFolder: oneDriveQuestShareUrl ? "Pasta de quest" : oneDriveQuestFolder,
+    questFolder: oneDriveQuestShareUrl ? "Pasta de missao" : oneDriveQuestFolder,
     folderUrl: oneDriveShareUrl || null,
     questFolderUrl: oneDriveQuestShareUrl || null,
     adminLoginUrl: adminKey ? null : "/auth/login",

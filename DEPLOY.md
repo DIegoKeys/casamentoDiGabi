@@ -24,7 +24,7 @@
    MICROSOFT_CLIENT_SECRET=seu-client-secret
    MICROSOFT_REDIRECT_URI=https://seu-site.onrender.com/auth/callback
    ONEDRIVE_SHARE_URL=seu-link-da-pasta
-   ONEDRIVE_QUEST_SHARE_URL=seu-link-da-pasta-de-quest
+   ONEDRIVE_QUEST_SHARE_URL=seu-link-da-pasta-de-missao
    MAX_FILE_MB=500
    CHUNK_SIZE_MB=5
    ```
